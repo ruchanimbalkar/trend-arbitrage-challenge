@@ -1,0 +1,1 @@
+// My trend-detection algorithm
