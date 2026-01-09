@@ -22,12 +22,14 @@ const getDataFromHackerNewsAPI = async () => {
 const storeNewsFromHacker = async () => {
   //Get data from hackerNewsAPI
   let hackerNewsData = await getDataFromHackerNewsAPI();
-  console.log("Hello", hackerNewsData);
+  //get first 20 items from hackerNewsData
+  const twentyItemsData = hackerNewsData.slice(0, 19);
+  console.log("Hello", twentyItemsData);
   //Go in each story and get score/rank
-  hackerNewsData.forEach((item) => {
-    //console.log("item", item);
-    async () => await getDataForItem(item);
-  });
+  for (let item of twentyItemsData) {
+    console.log("item", item);
+    await getDataForItem(item);
+  }
 };
 
 const getDataForItem = async (item) => {
@@ -36,8 +38,7 @@ const getDataForItem = async (item) => {
   );
   const data = await response.json();
   //print data on console
-  console.log("data title", data.title);
+  console.log("data title : ", data.title);
 };
 
-// storeNewsFromHacker();
-const hackerNewsData = getDataFromHackerNewsAPI();
+const hackerNewsData = storeNewsFromHacker();
