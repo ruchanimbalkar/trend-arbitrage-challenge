@@ -1,11 +1,15 @@
 // import statements
 import "dotenv/config";
 import mongoose from "mongoose";
+//import hackernews.js
 import storeNewsFromHacker from "./services/sources/hackernews.js";
+//import lobster.js
+import getDataFromLobster from "./services/sources/lobster.js";
 //Importing all of our node modules
 import express from "express"; // the framework that lets us build webservers
 //Import Mongoclient
 import { MongoClient } from "mongodb";
+import storeDataFromReddit from "./services/sources/reddit.js";
 
 //Declare a variable named app and call the express() function to create a new instance of express so we can use all of the methods, fucntions, properties of express
 // which will be saved in app
@@ -39,9 +43,14 @@ const main = async () => {
     const hackerNewsArray = await storeNewsFromHacker();
     await client.connect();
     //Store fresh hacker news data in collection
-    await createCollection(client, hackerNewsArray);
-
-    //await listDatabases(client);
+    await createCollection(client, hackerNewsArray, "hackerNewsTrends");
+    const lobsterData = await getDataFromLobster();
+    //console.log("lobsterData", lobsterData);
+    //Then store lobster data in collection
+    await createCollection(client, lobsterData, "lobsterDataTrends");
+    const redditData = await storeDataFromReddit();
+    //Then store lobster data in collection
+    await createCollection(client, redditData, "redditDataTrends");
   } catch (e) {
     console.error(e);
   } finally {
@@ -53,12 +62,14 @@ const main = async () => {
 main().catch(console.error);
 
 // (CRUD) Create collection
-const createCollection = async (client, hackerNewsArray) => {
+const createCollection = async (client, dataArray, collectionName) => {
   const results = await client
-    .db("hacker_news")
-    .collection("hackersNewsTrends")
-    .insertMany(hackerNewsArray);
-  console.log(`# of listings created : ${results.insertedCount}`);
+    .db("emerging_trends")
+    .collection(collectionName)
+    .insertMany(dataArray);
+  console.log(
+    `# of records created : ${results.insertedCount} in ${collectionName}`
+  );
   console.log("inserted ids : ", results.insertedIds);
 };
 
