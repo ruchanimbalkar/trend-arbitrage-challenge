@@ -17,6 +17,9 @@ const port = 3000;
 app.use(express.json());
 
 const startServer = async () => {
+  //Client should be connected before running the operations
+  await client.connect();
+
   app.listen(port, () => {
     console.log(`Server is listening on port #${port}`);
   }); //this method is turning on our server
@@ -24,9 +27,6 @@ const startServer = async () => {
   app.get("/", (req, res) => {
     res.send("Hi, Server is ON!");
   });
-
-  //Client should be connected before running the operations
-  await client.connect();
 };
 
 startServer();
