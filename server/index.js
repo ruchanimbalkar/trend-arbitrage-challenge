@@ -32,6 +32,17 @@ startServer();
 // Connect to the database and store API data :
 //Reference : https://www.mongodb.com/blog/post/quick-start-nodejs-mongodb-how-to-get-connected-to-your-database
 const main = async () => {
+  await freshDataFromAPI();
+};
+
+const getFreshData = async () => {
+  //empty the collection to avoid duplicates
+  client.db("emerging_trends").collection("trends").remove();
+  //make new api calls and get fresh data
+  await freshDataFromAPI();
+};
+
+const freshDataFromAPI = async () => {
   try {
     const hackerNewsArray = await storeNewsFromHacker();
     //Store fresh hacker news data in collection
@@ -69,8 +80,8 @@ const createCollection = async (client, dataArray) => {
 
 //	GET	get-latest this endpoint is to get the latest trends by getting the latest data from our sources, repopulating the database and using the scoring detection algo.
 app.get("/get-latest", async (req, res) => {
-  // Call main function, that connects to the database and stores data from API
-  main().catch(console.error);
+  // Call function, that empties the table and gets new data and then connects to the database and stores data from API
+  getFreshData().catch(console.error);
   //call helper function
   try {
     //Then call getLatestData() where processing happens
