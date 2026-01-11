@@ -21,6 +21,8 @@ function App() {
     }
   };
 
+  getLatestTrends();
+
   return (
     <>
       <h1>Emerging Trends</h1>

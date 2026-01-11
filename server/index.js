@@ -9,7 +9,7 @@ import getDataFromLobster from "./services/sources/lobster.js";
 import client from "./models/trend.js";
 import storeDataFromReddit from "./services/sources/reddit.js";
 //Helper Functions for API
-import getLatestTrends from "./routes/trends.js";
+import { getLatestTrends } from "./routes/trends.js";
 
 //First start the server
 const app = express();
@@ -68,6 +68,10 @@ const createCollection = async (client, dataArray, collectionName) => {
 //	GET	get-latest-trends
 app.get("/get-latest-trends", async (req, res) => {
   //call helper function
-  let trends = await getLatestTrends();
-  res.json(trends);
+  try {
+    let trends = await getLatestTrends();
+    res.json(trends);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
