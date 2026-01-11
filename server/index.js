@@ -37,7 +37,13 @@ const main = async () => {
 
 const getFreshData = async () => {
   //empty the collection to avoid duplicates
-  client.db("emerging_trends").collection("trends").remove();
+  const results = await client
+    .db("emerging_trends")
+    .collection("trends")
+    .deleteMany({});
+  // Log how many documents were deleted
+  console.log(`Deleted ${results.deletedCount} documents.`);
+
   //make new api calls and get fresh data
   await freshDataFromAPI();
 };
