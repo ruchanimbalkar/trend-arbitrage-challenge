@@ -5,18 +5,18 @@ import express from "express";
 //import hackernews.js
 import storeNewsFromHacker from "./services/sources/hackernews.js";
 //import lobster.js
-import getDataFromLobster from "./services/sources/lobster.js";
+import storeDataFromLobster from "./services/sources/lobster.js";
 import client from "./models/trend.js";
 import storeDataFromReddit from "./services/sources/reddit.js";
 //Helper Functions for API
-import { getLatestTrends } from "./routes/trends.js";
+import getLatestTrends from "./routes/trends.js";
 
 //First start the server
 const app = express();
 const port = 3000;
 app.use(express.json());
 
-const startServer = () => {
+const startServer = async () => {
   app.listen(port, () => {
     console.log(`Server is listening on port #${port}`);
   }); //this method is turning on our server
@@ -24,23 +24,25 @@ const startServer = () => {
   app.get("/", (req, res) => {
     res.send("Hi, Server is ON!");
   });
+
+  //Client should be connected before running the operations
+  await client.connect();
 };
 
 startServer();
 // Connect to the database and store API data :
 const main = async () => {
   try {
-    await client.connect();
-    //const hackerNewsArray = await storeNewsFromHacker();
+    const hackerNewsArray = await storeNewsFromHacker();
     //Store fresh hacker news data in collection
-    // await createCollection(client, hackerNewsArray, "hackerNewsTrends");
-    // const lobsterData = await getDataFromLobster();
-    // //console.log("lobsterData", lobsterData);
-    // //Then store lobster data in collection
-    // await createCollection(client, lobsterData, "lobsterDataTrends");
+    await createCollection(client, hackerNewsArray);
+    const lobsterData = await storeDataFromLobster();
+    //console.log("lobsterData", lobsterData);
+    //Then store lobster data in collection
+    await createCollection(client, lobsterData);
     const redditData = await storeDataFromReddit();
     //Then store reddit data in collection
-    await createCollection(client, redditData, "redditDataTrends");
+    await createCollection(client, redditData);
   } catch (e) {
     console.error(e);
   } finally {
@@ -48,17 +50,17 @@ const main = async () => {
   }
 };
 
-// Call main function, that connects to the database
+// Call main function, that connects to the database and stores data
 main().catch(console.error);
 
 // (CRUD) Create collection
-const createCollection = async (client, dataArray, collectionName) => {
+const createCollection = async (client, dataArray) => {
   const results = await client
     .db("emerging_trends")
-    .collection(collectionName)
+    .collection("trends")
     .insertMany(dataArray);
   console.log(
-    `# of records created : ${results.insertedCount} in ${collectionName}`
+    `# of records created : ${results.insertedCount} in trends collection`
   );
   console.log("inserted ids : ", results.insertedIds);
 };

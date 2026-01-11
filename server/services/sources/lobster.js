@@ -18,4 +18,15 @@ const getDataFromLobster = async () => {
   }
 };
 
-export default getDataFromLobster;
+const storeDataFromLobster = async () => {
+  let array = await getDataFromLobster();
+  console.log("array", array);
+  const lobsterData = array.map((item) => ({
+    title: item.title,
+    score: item.score,
+  }));
+  console.log("lobsterData", lobsterData);
+  return lobsterData;
+};
+
+export default storeDataFromLobster;
