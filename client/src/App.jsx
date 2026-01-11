@@ -9,7 +9,7 @@ function App() {
 
   const getLatestTrends = async () => {
     try {
-      const response = await fetch("/api/get-latest-trends");
+      const response = await fetch("/api/latest");
       if (!response.ok) {
         console.error(`Response status: ${response.status}`);
         return; // Exit early //Reference : https://dev.to/muthuraja_r/using-guard-clauses-in-asyncawait-a-clean-coding-technique-for-readable-and-maintainable-code-367j
