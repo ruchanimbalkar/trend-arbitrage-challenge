@@ -5,6 +5,7 @@ import Card from "./components/Card.jsx";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
+  const [trendData, setTrendData] = useState([]);
 
   const getLatestTrends = async () => {
     try {
@@ -17,6 +18,7 @@ function App() {
       const data = await response.json();
       //print on console
       console.log(data);
+      setTrendData(data);
     } catch {
       //print error on console
       console.log("Error retrieving user data" + error.message);
@@ -38,7 +40,7 @@ function App() {
       <button onClick={() => setRefresh(true)}> Refresh </button>
       <div className="result-card">
         <h2> Growing topics in descending order: </h2>
-        {data.map((item, index) => (
+        {trendData.map((item, index) => (
           <Card title={item.title} score={item.score} key={"index_" + index} />
         ))}
       </div>

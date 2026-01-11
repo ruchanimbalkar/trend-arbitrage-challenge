@@ -249,9 +249,10 @@ function calculateTrends(rawItems) {
 
   // Score each cluster
   const scoredTrends = clusters.map((cluster) => {
+    const computedScore = scoreCluster(cluster);
     return {
       title: cluster.representativeTitle,
-      score: scoreCluster(cluster),
+      score: Number.isFinite(computedScore) ? computedScore : 0,
       items: cluster.items,
     };
   });
