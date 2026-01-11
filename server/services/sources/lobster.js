@@ -24,6 +24,7 @@ const storeDataFromLobster = async () => {
   const lobsterData = array.map((item) => ({
     title: item.title,
     score: item.score,
+    date: item.created_at,
   }));
   console.log("lobsterData", lobsterData);
   return lobsterData;

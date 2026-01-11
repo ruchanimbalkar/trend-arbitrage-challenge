@@ -10,7 +10,7 @@ import client from "./models/trend.js";
 import storeDataFromReddit from "./services/sources/reddit.js";
 //Helper Functions for API
 import getLatestTrends from "./routes/trends.js";
-import { processTrends } from "../scoring.js";
+import { getLatestData } from "./routes/trends.js";
 //First start the server
 const app = express();
 const port = 3000;
@@ -82,13 +82,10 @@ app.get("/get-latest-trends", async (req, res) => {
 //Get latest
 app.get("/latest", async (req, res) => {
   try {
-    const rawData = await db.collection("trends").find().toArray();
-
-    // This is where the magic happens
-    const processedData = await processTrends(rawData);
-
-    res.json(processedData);
+    //call helper function
+    let processedData = await getLatestData();
+    res.send(processedData);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).send(err.message);
   }
 });

@@ -29,12 +29,12 @@ const storeNewsFromHacker = async () => {
   let hackerNewsArray = [];
   //Get data from hackerNewsAPI
   let hackerNewsData = await getDataFromHackerNewsAPI();
-  //get the first 20 items from hackerNewsData
-  const twentyItemsData = hackerNewsData.slice(0, 20);
-  console.log("Hello", twentyItemsData.length);
+  //get some items from hackerNewsData
+  const items = hackerNewsData.slice(0, 51);
+  console.log("Hello", items.length);
   //Go in each story and get score/rank
   //Note : Initally I used forEach loop to iterate through the array but it did not work as it is not async friendly and I was not able to make the function call getDataFromItem() for each array element to get title of the news item so I switched to for of loop as it is infact async friendly
-  for (let item of twentyItemsData) {
+  for (let item of items) {
     // test : console.log("item", item);
     //Get hackerNewsData array in a temporary array variable named 'tempArray'
     let tempArray = hackerNewsArray;

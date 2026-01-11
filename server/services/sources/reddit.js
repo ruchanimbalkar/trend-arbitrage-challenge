@@ -26,6 +26,7 @@ const storeDataFromReddit = async () => {
   const redditData = array.map((item) => ({
     title: item.data.title,
     score: item.data.score,
+    time: item.data.created,
   }));
   console.log("redditData", redditData);
   return redditData;
