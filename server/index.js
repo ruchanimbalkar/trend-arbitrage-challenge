@@ -31,6 +31,7 @@ const startServer = async () => {
 
 startServer();
 // Connect to the database and store API data :
+//Reference : https://www.mongodb.com/blog/post/quick-start-nodejs-mongodb-how-to-get-connected-to-your-database
 const main = async () => {
   try {
     const hackerNewsArray = await storeNewsFromHacker();
