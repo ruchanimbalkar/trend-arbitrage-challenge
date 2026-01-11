@@ -1,29 +1,32 @@
 // import statements
 import "dotenv/config";
-import mongoose from "mongoose";
+// the framework that lets us build webservers
 import express from "express";
 //import hackernews.js
 import storeNewsFromHacker from "./services/sources/hackernews.js";
 //import lobster.js
 import getDataFromLobster from "./services/sources/lobster.js";
-//Importing all of our node modules
-// the framework that lets us build webservers
 import client from "./models/trend.js";
 import storeDataFromReddit from "./services/sources/reddit.js";
-import apiEndPoints from "../routes/trends.js";
+//Helper Functions for API
+//import getAllTrends from "./routes/trends.js";
 
 //First start the server
 const app = express();
 const port = 3000;
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Server is listening on port #${port}`);
-}); //this method is turning on our server
+const startServer = () => {
+  app.listen(port, () => {
+    console.log(`Server is listening on port #${port}`);
+  }); //this method is turning on our server
 
-app.get("/", (req, res) => {
-  res.send("Hi, Server is ON!");
-});
+  app.get("/", (req, res) => {
+    res.send("Hi, Server is ON!");
+  });
+};
+
+startServer();
 // Connect to the database and store API data :
 const main = async () => {
   try {
@@ -60,4 +63,11 @@ const createCollection = async (client, dataArray, collectionName) => {
   console.log("inserted ids : ", results.insertedIds);
 };
 
-export default app;
+//API endpoints
+
+//	GET	get-latest-trends
+app.get("/get-latest-trends", async (req, res) => {
+  //call helper function
+  let trends = await getAllTrends();
+  res.json(trends);
+});
