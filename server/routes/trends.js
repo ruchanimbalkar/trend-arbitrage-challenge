@@ -1,8 +1,9 @@
-import client from "./models/trend.js";
+import client from "../models/trend.js";
 
 //Helper Functions:
-//getAllUsers()
-const getAllTrends = async () => {
+//getLatestTrends
+const getLatestTrends = async () => {
+  console.log("inside function get all trends");
   //Get trends from mongoDb
   const results = await client
     .db("emerging_trends")
@@ -15,4 +16,4 @@ const getAllTrends = async () => {
   }
 };
 
-export default getAllTrends;
+export default getLatestTrends;

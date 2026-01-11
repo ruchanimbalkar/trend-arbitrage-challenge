@@ -9,7 +9,7 @@ import getDataFromLobster from "./services/sources/lobster.js";
 import client from "./models/trend.js";
 import storeDataFromReddit from "./services/sources/reddit.js";
 //Helper Functions for API
-//import getAllTrends from "./routes/trends.js";
+import getLatestTrends from "./routes/trends.js";
 
 //First start the server
 const app = express();
@@ -30,16 +30,16 @@ startServer();
 // Connect to the database and store API data :
 const main = async () => {
   try {
-    const hackerNewsArray = await storeNewsFromHacker();
     await client.connect();
+    //const hackerNewsArray = await storeNewsFromHacker();
     //Store fresh hacker news data in collection
-    await createCollection(client, hackerNewsArray, "hackerNewsTrends");
-    const lobsterData = await getDataFromLobster();
-    //console.log("lobsterData", lobsterData);
-    //Then store lobster data in collection
-    await createCollection(client, lobsterData, "lobsterDataTrends");
+    // await createCollection(client, hackerNewsArray, "hackerNewsTrends");
+    // const lobsterData = await getDataFromLobster();
+    // //console.log("lobsterData", lobsterData);
+    // //Then store lobster data in collection
+    // await createCollection(client, lobsterData, "lobsterDataTrends");
     const redditData = await storeDataFromReddit();
-    //Then store lobster data in collection
+    //Then store reddit data in collection
     await createCollection(client, redditData, "redditDataTrends");
   } catch (e) {
     console.error(e);
@@ -68,6 +68,6 @@ const createCollection = async (client, dataArray, collectionName) => {
 //	GET	get-latest-trends
 app.get("/get-latest-trends", async (req, res) => {
   //call helper function
-  let trends = await getAllTrends();
+  let trends = await getLatestTrends();
   res.json(trends);
 });

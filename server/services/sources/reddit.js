@@ -24,9 +24,10 @@ const storeDataFromReddit = async () => {
   let array = await getDataFromReddit();
   console.log("array", array);
   const redditData = array.map((item) => ({
-    title: item.title,
-    score: item.score,
+    title: item.data.title,
+    score: item.data.score,
   }));
+  console.log("redditData", redditData);
   return redditData;
 };
 export default storeDataFromReddit;
