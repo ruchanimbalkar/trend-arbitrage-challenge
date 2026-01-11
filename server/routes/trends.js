@@ -1,28 +1,7 @@
 import client from "../models/trend.js";
 import calculateTrends from "../services/scoring.js";
 //Helper Functions:
-//getLatestTrends
-const getLatestTrends = async () => {
-  console.log("inside function get all trends");
-  //check for trends
-  if (!client.topology || !client.topology.isConnected()) {
-    await client.connect();
-  }
-  //Get trends
-  const results = await client
-    .db("emerging_trends")
-    .collection("trends")
-    .find({})
-    .toArray();
-  if (results) {
-    console.log("Found all trends : ");
-    return results;
-  } else {
-    console.log("No trends found");
-  }
-};
-
-export const getLatestData = async () => {
+const getLatestData = async () => {
   if (!client.topology || !client.topology.isConnected()) {
     await client.connect();
   }
@@ -39,4 +18,4 @@ export const getLatestData = async () => {
   return processedData;
 };
 
-export default getLatestTrends;
+export default getLatestData;

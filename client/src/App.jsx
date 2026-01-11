@@ -6,10 +6,11 @@ import Card from "./components/Card.jsx";
 function App() {
   const [refresh, setRefresh] = useState(false);
   const [trendData, setTrendData] = useState([]);
+  const [url, setUrl] = useState("/api/latest");
 
   const getLatestTrends = async () => {
     try {
-      const response = await fetch("/api/latest");
+      const response = await fetch(url);
       if (!response.ok) {
         console.error(`Response status: ${response.status}`);
         return; // Exit early //Reference : https://dev.to/muthuraja_r/using-guard-clauses-in-asyncawait-a-clean-coding-technique-for-readable-and-maintainable-code-367j
@@ -27,6 +28,7 @@ function App() {
 
   useEffect(() => {
     if (refresh) {
+      setUrl("/api/get-latest");
       getLatestTrends();
     }
   }, [refresh]);

@@ -9,8 +9,7 @@ import storeDataFromLobster from "./services/sources/lobster.js";
 import client from "./models/trend.js";
 import storeDataFromReddit from "./services/sources/reddit.js";
 //Helper Functions for API
-import getLatestTrends from "./routes/trends.js";
-import { getLatestData } from "./routes/trends.js";
+import getLatestData from "./routes/trends.js";
 //First start the server
 const app = express();
 const port = 3000;
@@ -68,11 +67,14 @@ const createCollection = async (client, dataArray) => {
 
 //API endpoints
 
-//	GET	get-latest-trends
-app.get("/get-latest-trends", async (req, res) => {
+//	GET	get-latest this endpoint is to get the latest trends by getting the latest data from our sources, repopulating the database and using the scoring detection algo.
+app.get("/get-latest", async (req, res) => {
+  // Call main function, that connects to the database and stores data from API
+  main().catch(console.error);
   //call helper function
   try {
-    let trends = await getLatestTrends();
+    //Then call getLatestData() where processing happens
+    let trends = await getLatestData();
     res.json(trends);
   } catch (err) {
     res.status(500).send(err.message);
