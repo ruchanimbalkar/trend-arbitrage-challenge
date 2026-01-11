@@ -1,7 +1,8 @@
-export default function Card() {
+export default function Card({ title, score }) {
   return (
     <>
-      <h2> </h2>
+      <h3>Trend Title : {title}</h3>
+      <h4> Trend Score : {score} </h4>
     </>
   );
 }

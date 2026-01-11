@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+//import components
+import Card from "./components/Card.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [refresh, setRefresh] = useState(false);
 
   const getLatestTrends = async () => {
     try {
@@ -21,7 +23,11 @@ function App() {
     }
   };
 
-  getLatestTrends();
+  useEffect(() => {
+    if (refresh) {
+      getLatestTrends();
+    }
+  }, [refresh]);
 
   return (
     <>
@@ -29,6 +35,13 @@ function App() {
       <p>
         Find emerging trends <b> before </b> they hit the mainstream.
       </p>
+      <button onClick={() => setRefresh(true)}> Refresh </button>
+      <div className="result-card">
+        <h2> Growing topics in descending order: </h2>
+        {data.map((item, index) => (
+          <Card title={item.title} score={item.score} key={"index_" + index} />
+        ))}
+      </div>
     </>
   );
 }
