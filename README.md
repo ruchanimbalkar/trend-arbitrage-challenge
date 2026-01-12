@@ -1,4 +1,4 @@
-1. **Setup instructions** — Download the github repo or go on the link down
+1. **Setup instructions** — Download the github repo or go on the link down. Prerequisite : Make sure the server is on : https://trend-arbitrage-challenge.onrender.com/ by clicking on the link first.
 2. **Environment variables** — MongoDB Connection String
 3. **Your trend-detection logic** — explain your "rising score" algorithm in plain English coming soon
 4. **Data sources used** — Reddit, HackerNews and Lobste.rs due to relevancy and easier to use when making API calls
