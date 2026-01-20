@@ -6,16 +6,26 @@ const getLatestData = async () => {
     await client.connect();
   }
   //Get data from db
-  const rawData = await client
+  const distinctDocs = await client
     .db("emerging_trends")
     .collection("trends")
-    .distinct("title")
-    .toArray();
+    .aggregate([
+      {
+        $group: {
+          _id: "$title", // Group by the title field
+          doc: { $first: "$$ROOT" }, // Keep the first full document found for each title
+        },
+      },
+      {
+        $replaceRoot: { newRoot: "$doc" }, // Flatten the result so it looks like a normal document
+      },
+    ])
+    .toArray(); // .aggregate() DOES require .toArray()
 
   //print on console
-  console.log("rawData", rawData);
+  console.log("rawData", distinctDocs);
   // process the data
-  const processedData = await calculateTrends(rawData);
+  const processedData = await calculateTrends(distinctDocs);
 
   return processedData;
 };
