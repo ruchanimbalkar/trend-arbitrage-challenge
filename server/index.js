@@ -35,19 +35,6 @@ const main = async () => {
   await freshDataFromAPI();
 };
 
-const getFreshData = async () => {
-  //empty the collection to avoid duplicates
-  const results = await client
-    .db("emerging_trends")
-    .collection("trends")
-    .deleteMany({});
-  // Log how many documents were deleted
-  console.log(`Deleted ${results.deletedCount} documents.`);
-
-  //make new api calls and get fresh data
-  await freshDataFromAPI();
-};
-
 const freshDataFromAPI = async () => {
   try {
     const hackerNewsArray = await storeNewsFromHacker();
@@ -82,21 +69,7 @@ const createCollection = async (client, dataArray) => {
   console.log("inserted ids : ", results.insertedIds);
 };
 
-//API endpoints
-
-//	GET	get-latest this endpoint is to get the latest trends by getting the latest data from our sources, repopulating the database and using the scoring detection algo.
-app.get("/get-latest", async (req, res) => {
-  // Call function, that empties the table and gets new data and then connects to the database and stores data from API
-  getFreshData().catch(console.error);
-  //call helper function
-  try {
-    //Then call getLatestData() where processing happens
-    let trends = await getLatestData();
-    res.json(trends);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
+//API endpoint
 
 //Get latest
 app.get("/latest", async (req, res) => {

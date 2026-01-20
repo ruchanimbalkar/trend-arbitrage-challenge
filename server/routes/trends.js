@@ -12,7 +12,7 @@ const getLatestData = async () => {
     .find({})
     .toArray();
 
-  // process it using Gemini API
+  // process the data
   const processedData = await calculateTrends(rawData);
 
   return processedData;

@@ -55,8 +55,7 @@ This is a full stack app.
 
 These are the API endpoints I built:
 
-1. GET /get-latest Retrieves latest trends from the database and processes it in the cosring algorithm.
-2. GET /latest Retrieves latest trends from the database and processes it in the cosring algorithm
+1. GET /latest Retrieves latest trends from the database and processes it in the cosring algorithm
 
 ## 🗄️ Database Schema
 

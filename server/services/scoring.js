@@ -178,16 +178,15 @@ function clusterItems(items) {
 
   return clusters;
 }
-
 // -------------------------------
-// TREND SCORING
+// TREND SCORING (FIXED)
 // -------------------------------
 
 function scoreCluster(cluster) {
-  // Current time in milliseconds
+  // Get the current time in milliseconds
   const now = Date.now();
 
-  // Number of items in this cluster
+  // Count how many items mention this trend
   const mentionCount = cluster.items.length;
 
   // -------------------------------
@@ -195,73 +194,78 @@ function scoreCluster(cluster) {
   // -------------------------------
 
   const recencyScore = cluster.items.reduce((sum, item) => {
-    // Normalize timestamp safely
+    // Normalize the item timestamp into milliseconds
     const itemTimestamp = getItemTimestampInMilliseconds(item);
 
-    // Age in hours
+    // Compute age in hours
     const ageInHours = (now - itemTimestamp) / 3600000;
 
-    // Exponential decay favors newer mentions
+    // Apply exponential decay so newer items matter more
     return sum + Math.exp(-ageInHours / 24);
   }, 0);
 
   // -------------------------------
-  // VELOCITY SCORE
+  // VELOCITY SCORE (SAFE)
   // -------------------------------
 
+  // Collect timestamps for all items
   const timestamps = cluster.items.map(getItemTimestampInMilliseconds);
 
+  // Compute time range in hours (avoid zero)
   const timeRangeInHours =
     timestamps.length > 1
-      ? (Math.max(...timestamps) - Math.min(...timestamps)) / 3600000
+      ? Math.max(
+          (Math.max(...timestamps) - Math.min(...timestamps)) / 3600000,
+          1 / 3600 // minimum 1 second
+        )
       : 1;
 
+  // Velocity = mentions per hour
   const velocityScore = mentionCount / timeRangeInHours;
 
   // -------------------------------
-  // ENGAGEMENT SCORE (soft)
+  // ENGAGEMENT SCORE
   // -------------------------------
 
   const engagementScore = cluster.items.reduce((sum, item) => {
-    // Use log scaling to prevent domination by viral posts
-    return sum + Math.log(1 + Math.min(item.score || 0, 500));
+    // Clamp score to prevent domination by viral items
+    const safeItemScore = Math.min(item.score || 0, 500);
+
+    // Log scaling smooths extremes
+    return sum + Math.log(1 + safeItemScore);
   }, 0);
 
   // -------------------------------
-  // FINAL SCORE
+  // KEYWORD COHESION SCORE (NEW)
   // -------------------------------
 
-  return (
-    mentionCount * 1.5 + recencyScore * 2 + velocityScore * 3 + engagementScore
-  );
-}
+  // Extract keywords from cluster items
+  const keywords = extractKeywords(cluster.items);
 
-// -------------------------------
-// MAIN EXPORT
-// -------------------------------
+  // Sort keywords by weight descending
+  const sortedKeywords = keywords.sort((a, b) => b.weight - a.weight);
 
-// This is the function your routes will call
-function calculateTrends(rawItems) {
-  const MIN_CLUSTER_SIZE = 2;
+  // Take top 5 keywords only (noise control)
+  const topKeywords = sortedKeywords.slice(0, 5);
 
-  // Cluster similar items together
-  const clusters = clusterItems(rawItems);
+  // Sum keyword weights
+  const keywordScore = topKeywords.reduce((sum, keyword) => {
+    return sum + keyword.weight;
+  }, 0);
 
-  // Score each cluster
-  const scoredTrends = clusters.map((cluster) => {
-    const computedScore = scoreCluster(cluster);
-    return {
-      title: cluster.representativeTitle,
-      score: Number.isFinite(computedScore) ? computedScore : 0,
-      items: cluster.items,
-    };
-  });
+  // -------------------------------
+  // FINAL SCORE (ALWAYS NUMERIC)
+  // -------------------------------
 
-  // Sort trends by score (descending)
+  const finalScore =
+    mentionCount * 1.5 +
+    recencyScore * 2 +
+    velocityScore * 3 +
+    engagementScore +
+    keywordScore * 1.2;
 
-  return scoredTrends
-    .filter((trend) => trend.items.length >= MIN_CLUSTER_SIZE)
-    .sort((a, b) => b.score - a.score);
+  // Guarantee a valid number
+  return Number.isFinite(finalScore) ? finalScore : 0;
 }
 
 // Export

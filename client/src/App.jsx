@@ -4,13 +4,11 @@ import "./App.css";
 import Card from "./components/Card.jsx";
 
 function App() {
-  const [refresh, setRefresh] = useState(false);
   const [trendData, setTrendData] = useState([]);
-  const [url, setUrl] = useState("/api/latest");
 
   const getLatestTrends = async () => {
     try {
-      const response = await fetch(url);
+      const response = await fetch();
       if (!response.ok) {
         console.error(`Response status: ${response.status}`);
         return; // Exit early //Reference : https://dev.to/muthuraja_r/using-guard-clauses-in-asyncawait-a-clean-coding-technique-for-readable-and-maintainable-code-367j
@@ -27,11 +25,8 @@ function App() {
   };
 
   useEffect(() => {
-    if (refresh) {
-      setUrl("/api/get-latest");
-      getLatestTrends();
-    }
-  }, [refresh]);
+    getLatestTrends();
+  }, []);
 
   return (
     <>
@@ -39,7 +34,7 @@ function App() {
       <p>
         Find emerging trends <b> before </b> they hit the mainstream.
       </p>
-      <button onClick={() => setRefresh(true)}> Refresh </button>
+
       <div className="result-card">
         <h2> Growing topics in descending order: </h2>
         {trendData.map((item, index) => (
