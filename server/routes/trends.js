@@ -9,9 +9,11 @@ const getLatestData = async () => {
   const rawData = await client
     .db("emerging_trends")
     .collection("trends")
-    .find({})
+    .distinct("title")
     .toArray();
 
+  //print on console
+  console.log("rawData", rawData);
   // process the data
   const processedData = await calculateTrends(rawData);
 
