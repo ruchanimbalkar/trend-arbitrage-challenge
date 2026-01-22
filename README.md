@@ -1,11 +1,4 @@
-1. **Setup instructions** — Download the github repo or go on the link down. Prerequisite : Make sure the server is on : https://trend-arbitrage-challenge.onrender.com/ by clicking on the link first.
-2. **Environment variables** — MongoDB Connection String
-3. **Your trend-detection logic** — I used a simple keyword extraction logic using upvotes and date of the posts.
-4. **Data sources used** — Reddit, HackerNews and Lobste.rs due to relevancy and easier to use when making API calls
-
-5. **Assumptions & trade-offs** — I assumed we are using three sources that have upcoming posts and used a finite amount of data in the algorithm.
-   In the front end, I used one page, there is no filter or posts from a specific source.
-6. **Any additional features** — see below
+Prerequisite : Make sure the server is on : https://trend-arbitrage-challenge.onrender.
 
 # 📝 Trend Arbitration Project by Rucha Nimbalkar
 
